@@ -49,6 +49,13 @@ or point your agent at a `SKILL.md` in this repo. The only dependency is the
 npm install -g @selat-ai/selat-cli
 ```
 
+## Contributing a wrapper
+
+Wrappers are thin, text-only `SKILL.md` files over a vetted SELAT skill. See
+**[AUTHORING.md](AUTHORING.md)** for the SOP — frontmatter schema, required
+sections, the dry-run-first spine, the no-code/no-endpoint-URL rules, and the
+pre-PR checklist.
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Skills published to ClawHub are additionally
