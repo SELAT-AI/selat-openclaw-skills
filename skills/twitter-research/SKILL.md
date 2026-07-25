@@ -1,11 +1,11 @@
 ---
-name: x-ray
+name: twitter-research
 description: "Read-only Twitter/X research on SELAT — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Use when asked \"who is @X on Twitter\", \"show me X's recent tweets\", \"who's mentioning X\", \"how did this tweet do / who replied / who retweeted\", \"search X for <topic>\", or \"is <topic> trending\". A curated menu of 9 SELAT-native reads (~$0.001 each) — the agent runs only what the question needs. Pays per call in USDC from the user's own self-custody Circle Agent Wallet; no API keys, no signups. Full run hard-capped at $0.10."
 version: 1.0.0
 metadata:
   openclaw:
     emoji: "🔎"
-    homepage: https://github.com/SELAT-AI/selat-skills/tree/main/skills/x-ray
+    homepage: https://github.com/SELAT-AI/selat-skills/tree/main/skills/twitter-research
     requires:
       anyBins:
         - selat
@@ -21,7 +21,7 @@ metadata:
         description: "SELAT Router base URL. Only needed for the free dry run before `selat init` has written config; defaults to https://router.selat.ai thereafter."
 ---
 
-# x-ray
+# twitter-research
 
 Research Twitter/X, keylessly and pay-per-read. This skill is a curated **menu
 of 9 read-only endpoints** on SELAT's own first-party Twitter API — account
@@ -68,9 +68,9 @@ dry run probes every endpoint's live price and reachability for free — no
 wallet, no funds, no account, no `selat init`:
 
 ```bash
-selat skill install x-ray
+selat skill install twitter-research
 SELAT_ROUTER_URL=https://router.selat.ai \
-  selat skill verify ~/.config/selat/skills/x-ray
+  selat skill verify ~/.config/selat/skills/twitter-research
 ```
 
 (`verify` takes the installed skill's directory — `$XDG_CONFIG_HOME/selat/skills/<name>`,
@@ -98,7 +98,7 @@ Pass the params for the reads the question needs; unused params take safe
 defaults.
 
 ```bash
-selat skill run x-ray \
+selat skill run twitter-research \
   --handle openai \
   --query "AI agents" \
   --tweetId 1234567890123456789 \

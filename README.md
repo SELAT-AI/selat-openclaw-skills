@@ -17,7 +17,7 @@ executable code and no endpoint URLs** — installing one only ever writes text.
 | Skill | Intent | Full-run cap |
 |---|---|---|
 | [`vc-ai-infra-scout`](skills/vc-ai-infra-scout/SKILL.md) | VC deal sourcing across an AI-infra / crypto-AI / robotics / agentic-payments thesis — discover founders, read raise chatter, distill lead-fund theses, enrich the top lead | $0.40 |
-| [`x-ray`](skills/x-ray/SKILL.md) | Read-only Twitter/X research — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Curated 9-read menu (~$0.001/read); the agent runs only what's needed | $0.10 |
+| [`twitter-research`](skills/twitter-research/SKILL.md) | Read-only Twitter/X research — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Curated 9-read menu (~$0.001/read); the agent runs only what's needed | $0.10 |
 
 More coming: lead enrichment, influencer discovery, social intelligence.
 
