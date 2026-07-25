@@ -32,7 +32,7 @@ skill. Keep this open while you write; every rule here is load-bearing.
 6. **Self-check** against the checklist, then open a PR.
 
 Copy an existing wrapper (`skills/vc-ai-infra-scout/SKILL.md`,
-`skills/twitter-research/SKILL.md`) as the starting shape.
+`skills/x-ray/SKILL.md`) as the starting shape.
 
 ## Frontmatter schema
 
