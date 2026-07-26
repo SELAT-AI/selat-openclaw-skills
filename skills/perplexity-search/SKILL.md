@@ -1,7 +1,7 @@
 ---
 name: perplexity-search
 description: "Grounded web search & research via Perplexity, keyless and pay-per-call over SELAT. Use when asked to \"search the web for <topic>\", \"what's the latest on <topic>\", \"research <topic> with sources\", \"do a deep-research report on <X>\", or \"give me a grounded answer with citations\". Runs Perplexity's cheap web Search by default, and can escalate to a one-shot Agent answer or an async deep-research report when a plain search isn't enough. Paid per call in USDC (on Base) from the user's own self-custody Circle Agent Wallet — no Perplexity API key, no signup. Dry-run first to see live prices; every price the CLI shows already includes SELAT's ~5% routing markup."
-version: 1.1.1
+version: 1.1.2
 metadata:
   openclaw:
     emoji: "🔍"
@@ -47,10 +47,6 @@ Router. The `selat` CLI resolves the vetted endpoints and prints a receipt.
   and **deep research** are **separate, agent-run** paid calls — each its own
   spend, so **tell the user the cost (from its live quote) and get a yes before
   every escalation**.
-- The synchronous **Sonar** answer is documented but **temporarily unavailable**
-  (its 402 header exceeds Node's default size limit; fix in flight —
-  SELAT-AI/selat-pay#28 + selat-router#51). Use the Agent answer or async
-  deep-research instead.
 - **Always dry-run first** (Step 1 — free, no wallet) for the default step, show
   the user the real quoted price, and get their OK before any wallet setup or paid
   run.
@@ -128,11 +124,6 @@ use them:
    its `SKILL.md` ("Escalations") and `references/endpoints.md` — which carry the
    pinned schemas and the poll loop. Don't guess the request body.
 3. Synthesize the result into a cited brief, same as the default step.
-
-> The **synchronous Sonar answer** is documented but **temporarily unavailable** —
-> its 402 header exceeds Node's default size limit; a fix is in flight
-> (SELAT-AI/selat-pay#28 + selat-router#51). Until it ships, use the Agent answer
-> or async deep-research instead.
 
 ## Why this is safe to install
 
