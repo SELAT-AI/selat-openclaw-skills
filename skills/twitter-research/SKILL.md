@@ -1,7 +1,7 @@
 ---
 name: twitter-research
-description: "Read-only Twitter/X research on SELAT — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Use when asked \"who is @X on Twitter\", \"show me X's recent tweets\", \"who's mentioning X\", \"how did this tweet do / who replied / who retweeted\", \"search X for <topic>\", or \"is <topic> trending\". A curated menu of 9 SELAT-native reads (~$0.001 each) — the agent runs only what the question needs. Pays per call in USDC from the user's own self-custody Circle Agent Wallet; no API keys, no signups. Full run hard-capped at $0.10."
-version: 1.0.0
+description: "Read-only Twitter/X research on SELAT — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Use when asked \"who is @X on Twitter\", \"show me X's recent tweets\", \"who's mentioning X\", \"how did this tweet do / who replied / who retweeted\", \"search X for <topic>\", or \"is <topic> trending\". A curated menu of 9 SELAT-native reads — the agent runs only what the question needs. Pays per call in USDC from the user's own self-custody Circle Agent Wallet; no API keys, no signups. Dry-run first to see live prices."
+version: 1.0.1
 metadata:
   openclaw:
     emoji: "🔎"
@@ -39,8 +39,9 @@ it never posts, likes, or follows, and cannot see protected/private accounts.
 
 - Every read is a **real paid API call** in USDC from the **user's own Circle
   Agent Wallet** (MPC self-custody — SELAT never holds keys or funds).
-- Each read is **~$0.001**; the per-step and full-run caps are **$0.10**.
-  Running all 9 reads is ~$0.009 — but you usually don't need all 9.
+- **Prices and spend limits live in the underlying SELAT skill**, not here — the
+  live 402 quote from `selat skill verify`/`run` is the price source of truth, so
+  this wrapper doesn't restate dollar figures (they'd only drift).
 - **It's a menu, not a pipeline.** Map the request to the smallest set of
   reads (a profile question is 1 read, "how did this tweet land" is 3), and pass
   only the params those reads use. `selat skill run` executes every step, so pass
@@ -77,7 +78,7 @@ SELAT_ROUTER_URL=https://router.selat.ai \
 which defaults to the path above. The `SELAT_ROUTER_URL` prefix is only needed
 before `selat init` has written config.)
 
-This prints each of the 9 reads' real quoted price (~$0.001) from the live 402
+This prints each of the 9 reads' real quoted price from the live 402
 challenges. **Show the user these prices and get their OK before wallet setup.**
 If they don't want to proceed, stop here — nothing has been spent or created.
 
@@ -116,8 +117,8 @@ selat skill run twitter-research \
 `query` (+ `woeid`); "how did this tweet do" → `tweetId`. Each read returns raw
 JSON — your job is to distill it into a short answer (profile summary, tweet
 list with engagement, mention/follower read, tweet-reception breakdown, topic
-chatter, or trend list), in plain language, with the dollar cost. Keep endpoint
-URLs and raw JSON out of what you relay.
+chatter, or trend list), in plain language, with the dollar cost the CLI
+reported. Keep endpoint URLs and raw JSON out of what you relay.
 
 ## Why this is safe to install
 
@@ -126,8 +127,8 @@ URLs and raw JSON out of what you relay.
 - Endpoints are **https-only**, first-party (SELAT's own Twitter API), and
   pre-vetted; each publish is gated on a machine-checked live verification
   receipt.
-- Spend is **capped per step and per run** ($0.10), and the runner surfaces the
-  wallet's spending policy at every money moment.
+- Spend limits are **defined by the underlying SELAT skill and enforced by the
+  runner**, which surfaces the wallet's spending policy at every money moment.
 - Funds stay in the **user's own wallet**. No API keys, no platform balance, no
   custodian.
 

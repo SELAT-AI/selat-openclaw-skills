@@ -1,7 +1,7 @@
 ---
 name: perplexity-search
-description: "Grounded web search & research via Perplexity, keyless and pay-per-call over SELAT. Use when asked to \"search the web for <topic>\", \"what's the latest on <topic>\", \"research <topic> with sources\", \"do a deep-research report on <X>\", or \"give me a grounded answer with citations\". Runs Perplexity's cheap web Search by default (~$0.011), and can escalate to a one-shot Agent answer (~$0.011) or an async deep-research report (~$0.011 + free polling) when a plain search isn't enough. Paid per call in USDC (on Base) from the user's own self-custody Circle Agent Wallet — no Perplexity API key, no signup. Every price shown by the CLI already includes SELAT's ~5% routing markup."
-version: 1.1.0
+description: "Grounded web search & research via Perplexity, keyless and pay-per-call over SELAT. Use when asked to \"search the web for <topic>\", \"what's the latest on <topic>\", \"research <topic> with sources\", \"do a deep-research report on <X>\", or \"give me a grounded answer with citations\". Runs Perplexity's cheap web Search by default, and can escalate to a one-shot Agent answer or an async deep-research report when a plain search isn't enough. Paid per call in USDC (on Base) from the user's own self-custody Circle Agent Wallet — no Perplexity API key, no signup. Dry-run first to see live prices; every price the CLI shows already includes SELAT's ~5% routing markup."
+version: 1.1.1
 metadata:
   openclaw:
     emoji: "🔍"
@@ -28,7 +28,7 @@ cheap web **Search** — ranked results with page content and **source URLs** th
 you (the agent) synthesize into a cited answer. When a search-and-synthesize pass
 isn't enough, the skill also documents two **escalations** — a one-shot **Agent
 answer** and an async **deep-research** report — that you run per the installed
-skill's own guidance, always confirming the higher cost first.
+skill's own guidance, always confirming the cost first.
 
 It wraps a **SELAT skill**: a declarative, vetted recipe of paid API calls (no API
 keys, no signups) settled in USDC — **routed x402 on Base** through the SELAT
@@ -38,21 +38,22 @@ Router. The `selat` CLI resolves the vetted endpoints and prints a receipt.
 
 - Every call is **real USDC** from the **user's own Circle Agent Wallet** (MPC
   self-custody — SELAT never holds keys or funds).
-- **Prices the CLI shows already include SELAT's ~5% routing markup** — the quote
-  you see (from `selat skill verify`/`run`) is the final settled charge; nothing is
-  added on top.
-- Approximate costs:
-  | Action | Cost | Notes |
-  |---|---|---|
-  | **Web Search** (default step) | **~$0.011** | the wired `selat skill run` step; capped at **$0.03** |
-  | **Agent answer** (escalation) | ~$0.011 | one-shot synthesized answer + live search |
-  | **Deep research** (escalation) | ~$0.011 + **free** polling | async; minutes to complete |
-  | Synchronous Sonar answer | ~$0.105 | ⚠ **temporarily unavailable** (gateway header-size bug; fix in flight) |
-- The **$0.03 cap applies to the default Search step**. Escalations are **separate,
-  agent-run** paid calls — each is its own spend, so **tell the user the cost and
-  get a yes before every escalation**.
-- **Always dry-run first** (Step 1 — free, no wallet) for the default step, show the
-  user the real quoted price, and get their OK before any wallet setup or paid run.
+- **Prices and spend limits live in the underlying SELAT skill**, not here — the
+  live 402 quote from `selat skill verify`/`run` is the price source of truth, so
+  this wrapper doesn't restate dollar figures (they'd only drift).
+- **The quote the CLI shows already includes SELAT's ~5% routing markup** — it's
+  the final settled charge; nothing is added on top.
+- The default **Web Search** is the wired `selat skill run` step. **Agent answer**
+  and **deep research** are **separate, agent-run** paid calls — each its own
+  spend, so **tell the user the cost (from its live quote) and get a yes before
+  every escalation**.
+- The synchronous **Sonar** answer is documented but **temporarily unavailable**
+  (its 402 header exceeds Node's default size limit; fix in flight —
+  SELAT-AI/selat-pay#28 + selat-router#51). Use the Agent answer or async
+  deep-research instead.
+- **Always dry-run first** (Step 1 — free, no wallet) for the default step, show
+  the user the real quoted price, and get their OK before any wallet setup or paid
+  run.
 - Never ask for, paste, or handle a private key. Wallet auth is the CLI's Circle
   integration.
 
@@ -80,9 +81,9 @@ SELAT_ROUTER_URL=https://router.selat.ai \
 which defaults to the path above. The `SELAT_ROUTER_URL` prefix is only needed
 before `selat init` has written config.)
 
-This prints the default Search's real quoted price (~$0.011, markup included).
-**Show the user the price and get their OK before wallet setup.** If they don't want
-to proceed, stop here — nothing has been spent or created.
+This prints the default Search's real quoted price (markup included). **Show the
+user the price and get their OK before wallet setup.** If they don't want to
+proceed, stop here — nothing has been spent or created.
 
 ## Step 2 — wallet setup (only after the user opts in)
 
@@ -111,26 +112,27 @@ selat skill run perplexity-search \
 The step returns ranked web results with page content and source URLs. **Your job:**
 synthesize a concise answer **with inline citations to the source URLs**, note the
 recency window, and flag if results are thin or stale. Keep raw JSON out of what you
-relay — lead with the answer, the sources, and the dollar cost.
+relay — lead with the answer, the sources, and the dollar cost the CLI reported.
 
 ## Escalating beyond a plain search
 
 When one search pass isn't enough, the installed skill documents two higher-tier
-moves — **Agent answer** (a one-shot synthesized answer, ~$0.011) and **deep
-research** (an async `sonar-deep-research` report, ~$0.011 to kick off + free
-polling until it completes). These are **agent-run**, not part of the default
-`selat skill run`. To use them:
+moves — **Agent answer** (a one-shot synthesized answer) and **deep research** (an
+async `sonar-deep-research` report, kicked off once then polled for free until it
+completes). These are **agent-run**, not part of the default `selat skill run`. To
+use them:
 
-1. **Tell the user the higher cost and get a yes** before spending.
+1. **Get the live price for the call, tell the user, and get a yes** before
+   spending.
 2. Follow the exact request shapes and steps in the installed skill's own docs —
    its `SKILL.md` ("Escalations") and `references/endpoints.md` — which carry the
    pinned schemas and the poll loop. Don't guess the request body.
 3. Synthesize the result into a cited brief, same as the default step.
 
-> The **synchronous Sonar answer** (~$0.105) is documented but **temporarily
-> unavailable** — its 402 header exceeds Node's default size limit; a fix is in
-> flight (SELAT-AI/selat-pay#28 + selat-router#51). Until it ships, use the Agent
-> answer or async deep-research instead.
+> The **synchronous Sonar answer** is documented but **temporarily unavailable** —
+> its 402 header exceeds Node's default size limit; a fix is in flight
+> (SELAT-AI/selat-pay#28 + selat-router#51). Until it ships, use the Agent answer
+> or async deep-research instead.
 
 ## Why this is safe to install
 
@@ -138,9 +140,9 @@ polling until it completes). These are **agent-run**, not part of the default
   wrapper only ever writes text.
 - Endpoints are **https-only** and pre-vetted; each publish is gated on a
   machine-checked live verification receipt.
-- The default step's spend is **capped** ($0.03), escalations are each their own
-  cost-confirmed call, and the runner surfaces the wallet's spending policy at every
-  money moment.
+- Each paid call's **spend limit is defined by the underlying SELAT skill and
+  enforced by the runner**; escalations are each their own cost-confirmed call, and
+  the runner surfaces the wallet's spending policy at every money moment.
 - Funds stay in the **user's own wallet**. No Perplexity API key, no platform
   balance, no custodian.
 

@@ -13,7 +13,8 @@ skill. Keep this open while you write; every rule here is load-bearing.
   machine-readable payment recipe (endpoints, rails, price caps) lives *there*
   and is fetched by the `selat` CLI at install/run time — never duplicated here.
 - Its job is **intent + safety**: tell the agent when the capability applies,
-  make it dry-run before touching wallets, and cap spend. The heavy lifting
+  make it dry-run before touching wallets, and defer spend limits to the vetted
+  recipe. The heavy lifting
   (the actual paid calls) is the `selat` CLI's.
 
 **Do NOT wrap a SELAT skill that isn't merged and passing `verify` in
@@ -66,8 +67,10 @@ metadata:
   quoted example phrases (`"who is @X on Twitter"`, `"scout AI-infra startups"`).
 - State the money model in one clause: *pays per call in USDC from the user's
   own self-custody Circle wallet, no API keys*.
-- End with the **hard cost cap** (`Full run hard-capped at $X`), taken from the
-  SELAT skill's full-run `maxAmount`.
+- End with the dry-run pointer, **not a price** (`Dry-run first to see live
+  prices`). **Do not put dollar amounts or caps in the wrapper** — prices and
+  spend limits live in the SELAT skill and the live 402 quote (see the invariant
+  below).
 - Keep it to one paragraph; it's a JSON string — escape inner `"`.
 
 **`homepage`** always points at the wrapped SELAT skill's directory — that's the
@@ -77,9 +80,10 @@ source of truth reviewers follow.
 
 1. **`# <name>` + one-paragraph intro.** What it does; that it wraps a *SELAT
    skill* (declarative, vetted, keyless, USDC); read-only vs. side-effecting.
-2. **`## Cost — read this first`.** Per-step and full-run caps (from the
-   manifest); "every call is real USDC from the user's own Circle Agent Wallet
-   (MPC self-custody — SELAT never holds keys or funds)"; "always dry-run first";
+2. **`## Cost — read this first`.** "Every call is real USDC from the user's own
+   Circle Agent Wallet (MPC self-custody — SELAT never holds keys or funds)";
+   **prices and spend limits live in the underlying SELAT skill and the live 402
+   quote — don't restate dollar figures or caps here**; "always dry-run first";
    "never ask for/paste/handle a private key". If the underlying skill is a
    **menu** (independent steps, agent picks a subset), say so here and note that
    `selat skill run` executes *all* steps.
@@ -100,7 +104,8 @@ source of truth reviewers follow.
    skill, add routing guidance (which params for which intent).
 7. **`## Why this is safe to install`.** Declarative manifest / no code; endpoints
    https-only, first-party, pre-vetted, gated on a live verify receipt; spend
-   capped per step and per run; funds stay in the user's own wallet.
+   limits defined by the underlying skill and enforced by the runner; funds stay
+   in the user's own wallet.
 8. **`## Beyond this skill`.** `selat search "<intent>"` (free discovery) and
    `selat skill list --available`, plus the `selat-skills` docs link.
 
@@ -114,8 +119,11 @@ source of truth reviewers follow.
   should return nothing.
 - **`name` == folder == the SELAT skill name.** Consistent everywhere; ClawHub
   and `selat skill install` both key on it.
-- **Caps come from the SELAT manifest, verbatim.** Don't invent prices. If the
-  full-run cap is `$0.10`, the description and Cost section say `$0.10`.
+- **No prices or caps in the wrapper.** Don't restate per-step or full-run
+  dollar figures — they live in the SELAT manifest and the live 402 quote, which
+  are the source of truth. Duplicated numbers drift out of sync; instead defer to
+  the dry-run ("dry-run first to see live prices") and say spend limits are
+  defined by the underlying skill and enforced by the runner.
 - **Dry-run-first is non-negotiable.** Step 1 (`verify`, free, no wallet) always
   precedes any wallet/fund/run step. This is the trust spine — never reorder it.
 - **Menu vs. pipeline.** If the wrapped skill's steps are independent reads the
@@ -133,12 +141,13 @@ source of truth reviewers follow.
 
 - [ ] Wraps a **merged, verify-passing** SELAT skill; `homepage` points at it.
 - [ ] `name` == folder == SELAT skill name; frontmatter is valid YAML.
-- [ ] `description` has triggers + the money model + the hard cost cap.
+- [ ] `description` has triggers + the money model + a dry-run pointer (no price).
 - [ ] All 8 body sections present, in order; dry-run precedes wallet setup.
-- [ ] Caps match the SELAT manifest; params table matches the manifest params.
+- [ ] **No prices or caps restated** in the wrapper; params table matches the
+      manifest params.
 - [ ] **No endpoint URLs, no code, no secrets** (run the grep above).
 - [ ] README "Skills" table row added.
-- [ ] PR describes which SELAT skill it wraps and the cap.
+- [ ] PR describes which SELAT skill it wraps.
 
 ## Why this structure
 

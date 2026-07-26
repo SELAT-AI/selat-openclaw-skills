@@ -14,11 +14,11 @@ executable code and no endpoint URLs** — installing one only ever writes text.
 
 ## Skills
 
-| Skill | Intent | Full-run cap |
-|---|---|---|
-| [`vc-ai-infra-scout`](skills/vc-ai-infra-scout/SKILL.md) | VC deal sourcing across an AI-infra / crypto-AI / robotics / agentic-payments thesis — discover founders, read raise chatter, distill lead-fund theses, enrich the top lead | $0.40 |
-| [`twitter-research`](skills/twitter-research/SKILL.md) | Read-only Twitter/X research — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Curated 9-read menu (~$0.001/read); the agent runs only what's needed | $0.10 |
-| [`perplexity-search`](skills/perplexity-search/SKILL.md) | Grounded web search & research via Perplexity — cheap web search (~$0.011) plus agent-answer & async deep-research escalations, keyless & cited. Shown prices include SELAT's ~5% routing markup | $0.03 (default search; escalations extra) |
+| Skill | Intent |
+|---|---|
+| [`vc-ai-infra-scout`](skills/vc-ai-infra-scout/SKILL.md) | VC deal sourcing across an AI-infra / crypto-AI / robotics / agentic-payments thesis — discover founders, read raise chatter, distill lead-fund theses, enrich the top lead |
+| [`twitter-research`](skills/twitter-research/SKILL.md) | Read-only Twitter/X research — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Curated 9-read menu; the agent runs only what's needed |
+| [`perplexity-search`](skills/perplexity-search/SKILL.md) | Grounded web search & research via Perplexity — cheap web search plus agent-answer & async deep-research escalations, keyless & cited. Shown prices include SELAT's ~5% routing markup |
 
 More coming: lead enrichment, influencer discovery, social intelligence.
 
@@ -33,9 +33,10 @@ All skills in this repo follow the same three-step spine, in this order:
 2. **Wallet setup — only after the user opts in.** `selat init` creates a
    self-custody Circle Agent Wallet (MPC — SELAT never holds keys or funds);
    `selat fund` deposits USDC into Circle Gateway.
-3. **Capped paid run.** `selat skill run <name>` executes the vetted recipe.
-   Spend is capped per step and per run; the runner prints a per-rail receipt
-   summary. The live 402 quote is always the price source of truth.
+3. **Paid run.** `selat skill run <name>` executes the vetted recipe. The
+   underlying skill defines each step's spend limit and the runner enforces it,
+   printing a per-rail receipt summary. The live 402 quote is always the price
+   source of truth.
 
 Payments settle across multiple rails — direct Circle x402, routed MPP, and
 routed x402 on Base — auto-detected per step by the CLI.
