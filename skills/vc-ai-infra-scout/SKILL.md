@@ -1,7 +1,7 @@
 ---
 name: vc-ai-infra-scout
-description: "Deal-sourcing scout for VCs running an AI-infrastructure thesis — AI infra, crypto-AI/decentralized-AI, robotics/embodied-AI, agentic payments. Use when asked to \"scout AI infra startups\", \"find founders who haven't raised yet\", \"build a deal shortlist for my thesis\", or \"what pre-seed/seed rounds are being announced and what's the thesis behind them\". Fuses Hacker News, Product Hunt, web, Twitter/X, and LinkedIn signal via vetted, price-capped paid endpoints (SELAT); pays per call in USDC from the user's own self-custody Circle wallet. Full run hard-capped at $0.40."
-version: 1.0.0
+description: "Deal-sourcing scout for VCs running an AI-infrastructure thesis — AI infra, crypto-AI/decentralized-AI, robotics/embodied-AI, agentic payments. Use when asked to \"scout AI infra startups\", \"find founders who haven't raised yet\", \"build a deal shortlist for my thesis\", or \"what pre-seed/seed rounds are being announced and what's the thesis behind them\". Fuses Hacker News, Product Hunt, web, Twitter/X, and LinkedIn signal via vetted paid endpoints (SELAT); pays per call in USDC from the user's own self-custody Circle wallet. Dry-run first to see live prices."
+version: 1.0.1
 metadata:
   openclaw:
     emoji: "🔭"
@@ -42,9 +42,9 @@ per-rail receipt summary.
 
 - Every step is a **real paid API call** in USDC from the **user's own Circle
   Agent Wallet** (MPC self-custody — SELAT never holds keys or funds).
-- Per-step caps are **$0.02–$0.05**; the **full run is hard-capped at $0.40**.
-  Caps are enforced by the runner; the live HTTP 402 quote is the price source
-  of truth.
+- **Prices and spend limits live in the underlying SELAT skill**, not here — the
+  live HTTP 402 quote from `selat skill verify`/`run` is the price source of
+  truth, so this wrapper doesn't restate dollar figures (they'd only drift).
 - **Always dry-run first** (Step 1 — free, no wallet), show the user the real
   quoted prices, and get their OK before any wallet setup or paid run.
 - Never ask for, paste, or handle a private key. Wallet auth is handled by the
@@ -80,8 +80,8 @@ which defaults to the path above. The `SELAT_ROUTER_URL` prefix is only needed
 before `selat init` has written config; it lets the routed steps quote their
 price with zero setup.)
 
-This prints each step's real quoted price and rail — the actual cost of a run,
-from the live 402 challenges. **Show the user these prices and get their OK
+This prints each step's real quoted price and rail from the live 402
+challenges — the actual cost of a run. **Show the user these prices and get their OK
 before going anywhere near wallet setup.** If they don't want to proceed,
 stop here; nothing has been spent and nothing has been created.
 
@@ -127,8 +127,8 @@ outreach note for the top pick.
   it only ever writes data.
 - Endpoints are **https-only** and pre-vetted; each publish is gated on a
   machine-checked live verification receipt.
-- Spend is **capped per step and per run**, and the runner surfaces the
-  wallet's spending policy at every money moment.
+- Spend limits are **defined by the underlying SELAT skill and enforced by the
+  runner**, which surfaces the wallet's spending policy at every money moment.
 - Funds stay in the **user's own wallet**. No API keys, no platform balance,
   no custodian.
 
