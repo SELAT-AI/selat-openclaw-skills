@@ -1,7 +1,7 @@
 ---
 name: perplexity-search
-description: "Grounded web search & research via Perplexity, keyless and pay-per-call over SELAT. Use when asked to \"search the web for <topic>\", \"what's the latest on <topic>\", \"pull cited web context on <X>\", \"research <topic> with sources\", or \"give me a grounded answer with citations\". Runs Perplexity's x402 search endpoint and returns ranked web results with page content and source URLs for the agent to synthesize into a cited answer. Pays per call in USDC (on Base) from the user's own self-custody Circle Agent Wallet; no Perplexity API key, no signup. Each search is ~$0.01, hard-capped at $0.03."
-version: 1.0.0
+description: "Grounded web search & research via Perplexity, keyless and pay-per-call over SELAT. Use when asked to \"search the web for <topic>\", \"what's the latest on <topic>\", \"pull cited web context on <X>\", \"research <topic> with sources\", or \"give me a grounded answer with citations\". Runs Perplexity's x402 search endpoint and returns ranked web results with page content and source URLs for the agent to synthesize into a cited answer. Pays per call in USDC (on Base) from the user's own self-custody Circle Agent Wallet; no Perplexity API key, no signup. Each search settles at ~$0.011 (a ~$0.01 quote plus the SELAT Router's ~5% markup). This runs Perplexity's Search (ranked results, cheap) — NOT its pricier Sonar answer endpoint (~$0.105) — and the single call is capped at $0.03."
+version: 1.0.1
 metadata:
   openclaw:
     emoji: "🔍"
@@ -26,7 +26,7 @@ metadata:
 Get a **grounded, cited web answer** from Perplexity without an API key. This
 skill runs Perplexity's search endpoint over SELAT and returns ranked web
 results — titles, page snippets/content, and **source URLs** — which you (the
-agent) synthesize into a short answer *with citations*. One paid call, ~$0.01.
+agent) synthesize into a short answer *with citations*. One paid call: a ~$0.01 quote plus the SELAT Router's ~5% markup, so ~$0.0105.
 
 It wraps a **SELAT skill**: a declarative, vetted recipe of paid API calls (no
 API keys, no signups) settled in USDC — here **routed x402 on Base** through the
@@ -36,9 +36,16 @@ SELAT Router. The `selat` CLI resolves the vetted endpoint and prints a receipt.
 
 - Each search is a **real paid API call** in USDC from the **user's own Circle
   Agent Wallet** (MPC self-custody — SELAT never holds keys or funds).
-- One search call is **~$0.01**; the run is **hard-capped at $0.03**. Caps
-  are enforced by the runner; the live HTTP 402 quote is the price source of
-  truth.
+- The live Search quote is **~$0.01**, and the **SELAT Router adds a ~5% markup**
+  on top — so a search settles at **~$0.0105**, not the raw quote. This skill's
+  single Search call is **capped at $0.03** by the runner.
+- **This runs Perplexity's Search (ranked web results you cite) — NOT its Sonar
+  answer endpoint (~$0.105).** It returns results for you to synthesize, it does
+  not pay for a pre-written Sonar answer. A true Sonar / deep-research run is a
+  different, ~10× pricier capability that this skill does not perform.
+- Every quoted price the runner prints is **before** the ~5% markup; the settled
+  charge is the quote × 1.05. The live HTTP 402 quote (plus markup) is the price
+  source of truth.
 - **Always dry-run first** (Step 1 — free, no wallet), show the user the real
   quoted price, and get their OK before any wallet setup or paid run.
 - Never ask for, paste, or handle a private key. Wallet auth is the CLI's Circle
@@ -70,8 +77,9 @@ SELAT_ROUTER_URL=https://router.selat.ai \
 which defaults to the path above. The `SELAT_ROUTER_URL` prefix is only needed
 before `selat init` has written config.)
 
-This prints the real quoted price (~$0.01) from the live 402 challenge. **Show
-the user the price and get their OK before wallet setup.** If they don't want to
+This prints the real quoted price from the live 402 challenge (~$0.01) — the
+settled charge adds the SELAT Router's ~5% markup, so ~$0.0105. **Show the user
+the price and get their OK before wallet setup.** If they don't want to
 proceed, stop here — nothing has been spent or created.
 
 ## Step 2 — wallet setup (only after the user opts in)

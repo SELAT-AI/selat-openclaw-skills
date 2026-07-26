@@ -18,7 +18,7 @@ executable code and no endpoint URLs** — installing one only ever writes text.
 |---|---|---|
 | [`vc-ai-infra-scout`](skills/vc-ai-infra-scout/SKILL.md) | VC deal sourcing across an AI-infra / crypto-AI / robotics / agentic-payments thesis — discover founders, read raise chatter, distill lead-fund theses, enrich the top lead | $0.40 |
 | [`twitter-research`](skills/twitter-research/SKILL.md) | Read-only Twitter/X research — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Curated 9-read menu (~$0.001/read); the agent runs only what's needed | $0.10 |
-| [`perplexity-search`](skills/perplexity-search/SKILL.md) | Grounded web search & research via Perplexity — ranked results with page content + source URLs for a cited answer, keyless (~$0.01/search) | $0.03 |
+| [`perplexity-search`](skills/perplexity-search/SKILL.md) | Grounded web search & research via Perplexity — ranked results with page content + source URLs for a cited answer, keyless (~$0.011/search incl. ~5% router markup) | $0.03 |
 
 More coming: lead enrichment, influencer discovery, social intelligence.
 
