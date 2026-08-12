@@ -1,6 +1,6 @@
 ---
 name: selat-capabilities-for-metamask
-description: "SELAT's capability layer for agents on a MetaMask Agent Wallet — tool use beyond the agent's native abilities, paid per call. When a task needs a capability you don't have (\"get me a web search API\", \"pull Polymarket candles\", \"scrape this site\", \"enrich this company\", real-time data, media generation), discover paid APIs by intent across SELAT's federated catalog, compare live prices, and buy across payment rails the wallet's native x402 payer does not cover (Gateway-batched x402, routed MPP); also fund a Circle Gateway purchasing budget gaslessly and report spend. Pays in USDC from the user's own self-custodial MetaMask Agent Wallet; every signature stays in the wallet's mm CLI; no API keys, no signups. Probe first to see live prices — nothing is signed until the user approves."
+description: "SELAT's capability layer for agents on a MetaMask Agent Wallet — tool use beyond the agent's native abilities, paid per call. Strongest for trading decision support on perpetuals and tokenized stocks (\"what are funding rates saying\", \"pull Polymarket candles\", \"quote and technicals for this tokenized equity's underlying\", \"news and social sentiment on this ticker\", \"macro regime check\") — research data only, never order execution or financial advice — and for general capabilities the agent lacks (\"get me a web search API\", \"scrape this site\", \"enrich this company\", real-time data, media generation). Discovers paid APIs by intent across SELAT's federated catalog, compares live prices, and buys across payment rails the wallet's native x402 payer does not cover (Gateway-batched x402, routed MPP); also funds a Circle Gateway purchasing budget gaslessly and reports spend. Pays in USDC from the user's own self-custodial MetaMask Agent Wallet; every signature stays in the wallet's mm CLI; no API keys, no signups. Probe first to see live prices — nothing is signed until the user approves."
 version: 1.0.0
 metadata:
   openclaw:
@@ -30,6 +30,15 @@ by intent across SELAT's federated catalog, buy them on any rail SELAT routes
 cannot sign), fund a Circle Gateway purchasing budget gaslessly, run
 declarative skill manifests, and report spend. **Side-effecting — it spends
 real money** once the user opts in; discovery and probing are free.
+
+Where it shines for MetaMask Agent Wallet users: **decision support for
+trading** — perpetuals and tokenized stocks. The catalog carries the reads a
+trading decision leans on: perp funding rates and venue context, prediction
+market candles, equity quotes and technical indicators for a tokenized stock's
+underlying, earnings and news sentiment, social chatter, and macro regime
+data. This skill **buys research data only** — it never places, cancels, or
+manages orders, and its output is never financial advice; the decision and any
+trade stay with the user, on their own venue.
 
 It wraps the `selat-purchasing` skill from
 [SELAT-AI/selat-metamask-skills](https://github.com/SELAT-AI/selat-metamask-skills).
@@ -125,6 +134,16 @@ Route the request to the operation it needs:
 
 (All paths relative to the installed upstream skill directory; the upstream
 `SKILL.md` and its `references/` are the authoritative per-operation docs.)
+
+**Routing trading decision-support intents** (the common case on this wallet):
+discover by the *read* the decision needs, not by venue — "perp funding rates
+for <asset>", "prediction market candles", "equity quote and RSI/MACD for
+<tokenized stock's underlying>", "news sentiment on <ticker>", "social chatter
+on <ticker>", "macro regime data". Probe each candidate, buy the few reads that
+actually move the decision, and synthesize a brief: what the data says, what
+would invalidate it, and what it cost. Present it as research with sources —
+never as advice, a prediction, or a signal to execute — and if the user asks
+this skill to place a trade, decline that part: it buys data only.
 
 Each call returns raw JSON — distill it into a plain-language answer with the
 dollar cost, and keep merchant URLs and raw JSON out of what you relay. After
