@@ -1,6 +1,6 @@
 ---
-name: selat-purchasing
-description: "Find and buy paid capabilities for an agent running on a MetaMask Agent Wallet — discover paid APIs by intent across SELAT's federated catalog (\"get me a web search API\", \"pull Polymarket candles\", \"find a scraping endpoint\"), compare live prices, and purchase across payment rails the wallet's native x402 payer does not cover (Gateway-batched x402, routed MPP); also fund a Circle Gateway purchasing budget gaslessly and report spend. Pays per call in USDC from the user's own self-custodial MetaMask Agent Wallet; every signature stays in the wallet's mm CLI; no API keys, no signups. Probe first to see live prices — nothing is signed until the user approves."
+name: selat-capabilities-for-metamask
+description: "SELAT's capability layer for agents on a MetaMask Agent Wallet — tool use beyond the agent's native abilities, paid per call. When a task needs a capability you don't have (\"get me a web search API\", \"pull Polymarket candles\", \"scrape this site\", \"enrich this company\", real-time data, media generation), discover paid APIs by intent across SELAT's federated catalog, compare live prices, and buy across payment rails the wallet's native x402 payer does not cover (Gateway-batched x402, routed MPP); also fund a Circle Gateway purchasing budget gaslessly and report spend. Pays in USDC from the user's own self-custodial MetaMask Agent Wallet; every signature stays in the wallet's mm CLI; no API keys, no signups. Probe first to see live prices — nothing is signed until the user approves."
 version: 1.0.0
 metadata:
   openclaw:
@@ -19,12 +19,15 @@ metadata:
           - mm
 ---
 
-# selat-purchasing
+# selat-capabilities-for-metamask
 
-Purchasing engine for an agent on a **MetaMask Agent Wallet**: discover paid
-capabilities by intent across SELAT's federated catalog, buy them on any rail
-SELAT routes (including Gateway-batched x402 and MPP, which the wallet's native
-x402 payer cannot sign), fund a Circle Gateway purchasing budget gaslessly, run
+**SELAT's capability layer, wired to a MetaMask Agent Wallet.** When a task
+needs tool use beyond the agent's native abilities — web search, scraping, data
+enrichment, real-time market data, media generation, on-chain reads — this
+skill turns "I can't do that" into a purchasable capability: discover paid APIs
+by intent across SELAT's federated catalog, buy them on any rail SELAT routes
+(including Gateway-batched x402 and MPP, which the wallet's native x402 payer
+cannot sign), fund a Circle Gateway purchasing budget gaslessly, run
 declarative skill manifests, and report spend. **Side-effecting — it spends
 real money** once the user opts in; discovery and probing are free.
 
