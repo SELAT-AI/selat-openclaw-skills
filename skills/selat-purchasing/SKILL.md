@@ -1,0 +1,149 @@
+---
+name: selat-purchasing
+description: "Find and buy paid capabilities for an agent running on a MetaMask Agent Wallet — discover paid APIs by intent across SELAT's federated catalog (\"get me a web search API\", \"pull Polymarket candles\", \"find a scraping endpoint\"), compare live prices, and purchase across payment rails the wallet's native x402 payer does not cover (Gateway-batched x402, routed MPP); also fund a Circle Gateway purchasing budget gaslessly and report spend. Pays per call in USDC from the user's own self-custodial MetaMask Agent Wallet; every signature stays in the wallet's mm CLI; no API keys, no signups. Probe first to see live prices — nothing is signed until the user approves."
+version: 1.0.0
+metadata:
+  openclaw:
+    emoji: "🛒"
+    homepage: https://github.com/SELAT-AI/selat-metamask-skills/tree/main/skills/selat-purchasing
+    requires:
+      bins:
+        - python3
+      anyBins:
+        - mm
+        - npm
+    install:
+      - kind: node
+        package: "@metamask/agent-wallet"
+        bins:
+          - mm
+---
+
+# selat-purchasing
+
+Purchasing engine for an agent on a **MetaMask Agent Wallet**: discover paid
+capabilities by intent across SELAT's federated catalog, buy them on any rail
+SELAT routes (including Gateway-batched x402 and MPP, which the wallet's native
+x402 payer cannot sign), fund a Circle Gateway purchasing budget gaslessly, run
+declarative skill manifests, and report spend. **Side-effecting — it spends
+real money** once the user opts in; discovery and probing are free.
+
+It wraps the `selat-purchasing` skill from
+[SELAT-AI/selat-metamask-skills](https://github.com/SELAT-AI/selat-metamask-skills).
+
+**How this wrapper differs from the others in this repo:** it does **not**
+install the `selat` CLI or any SELAT plugin, and it does not wrap a
+`selat-skills` recipe. Its engine is the **MetaMask Agent Wallet CLI (`mm`)**
+plus the upstream skill's Python scripts (standard library only — no
+third-party packages). SELAT is used keylessly as the catalog and payment
+router; custody stays entirely with the MetaMask wallet.
+
+## Cost — read this first
+
+- Every purchase is **real USDC** from the **user's own self-custodial MetaMask
+  Agent Wallet** and its Circle Gateway balance. SELAT never holds keys or
+  funds; every signature and on-chain action goes through the `mm` CLI — the
+  upstream scripts never touch key material.
+- **Prices live in the live 402 quotes, not here.** Probe first (Step 1 — free,
+  nothing signed), show the user the quoted prices, and get their OK. A refused
+  or expired quote charges nothing.
+- **It's a menu, not a pipeline.** Discovery, funding, paying, manifests, and
+  spend reports are independent operations — run only what the request needs.
+- Follow the upstream confirmation pattern: purchases above the session
+  threshold are always shown for approval with amount, merchant, and network;
+  a manifest is *many* purchases, so always dry-run it and show the quoted
+  total before executing.
+- The **Gateway deposit is the purchasing cap** — nothing this skill does can
+  spend more than the user deposited plus what the wallet's own policy allows.
+- Never ask for, paste, or handle a private key. Wallet auth is the `mm` CLI's
+  sign-in flow.
+
+## Step 0 — get the tooling (free, no funds)
+
+No `selat` CLI needed. If `mm` isn't on PATH, install the MetaMask Agent Wallet
+CLI, then fetch the upstream skill (text plus stdlib-only scripts) into the
+workspace:
+
+```bash
+mm --version || npm install -g @metamask/agent-wallet@latest
+npx skills add SELAT-AI/selat-metamask-skills
+```
+
+Installing creates nothing money-related — no wallet, no account, no keys.
+Note the upstream repo is a prototype from a live 2026-08 integration spike:
+proven against mainnet, not yet hardened — review before large budgets.
+
+## Step 1 — probe first, before any wallet setup
+
+**Do this before authenticating a wallet or asking the user to fund anything.**
+Discovery and probing are free and sign nothing:
+
+```bash
+python3 skills/selat-purchasing/scripts/discover.py "<intent>"
+python3 skills/selat-purchasing/scripts/routed_pay.py "<merchant-url>" GET --probe-only
+python3 skills/selat-purchasing/scripts/run_manifest.py <manifest.json> --dry-run
+```
+
+`discover.py` searches the federated catalog by intent; `--probe-only` and
+`--dry-run` print each step's real quoted price from the live 402 challenge.
+**Show the user these prices and get their OK before wallet setup.** If they
+decline, stop — nothing has been spent or created.
+
+## Step 2 — wallet setup (only after the user opts in)
+
+Authenticate the wallet, verify it, then fund a purchasing budget gaslessly:
+
+```bash
+mm doctor
+python3 skills/selat-purchasing/scripts/eco_fund.py <usdc-amount>
+```
+
+Funding gotcha that matters: **each `mm` sign-in method (Google, email,
+MetaMask Mobile QR) loads a different wallet address.** Fund the wallet of the
+sign-in method the agent actually uses, and keep using that method. When the
+wallet escalates a signature to the user, the approval arrives on that sign-in
+method's channel (email link, or push for Mobile QR) — tell the user where to
+look and wait; an approval that lands after a quote expires must be discarded
+and re-quoted, never submitted.
+
+## Step 3 — run
+
+Route the request to the operation it needs:
+
+| User intent | Run |
+|---|---|
+| Find a paid capability by intent | `scripts/discover.py "<intent>"` (free) |
+| Quote a merchant without paying | `scripts/routed_pay.py "<url>" GET --probe-only` (free) |
+| Pay a merchant, any rail | `scripts/routed_pay.py "<url>" [METHOD] [BODY]` |
+| Native payer failed ("expected 402, got 403") | retry via `scripts/routed_pay.py` |
+| Run a skill manifest (fixed paid sequence) | `scripts/run_manifest.py <manifest.json> --dry-run`, show the total, then `--yes` |
+| Run a vetted `selat-skills` recipe on this wallet | install it from `SELAT-AI/selat-skills`, substitute `scripts/selat_pay.py` wherever it says `selat-pay` |
+| Show purchases and spend | `scripts/spend_report.py` |
+
+(All paths relative to the installed upstream skill directory; the upstream
+`SKILL.md` and its `references/` are the authoritative per-operation docs.)
+
+Each call returns raw JSON — distill it into a plain-language answer with the
+dollar cost, and keep merchant URLs and raw JSON out of what you relay. After
+any paid run, report what was actually spent (`scripts/spend_report.py`).
+
+## Why this is safe to install
+
+- **This wrapper is text-only** — installing it writes one markdown file; the
+  upstream scripts it defers to are Python standard library only.
+- **The wallet stays the authority.** Every signature and transaction goes
+  through the `mm` CLI; the scripts never see or handle key material.
+- **Payments are quote-pinned through the SELAT router**, so the EIP-712 domain
+  the wallet signs is always the router's (pinned to Circle's Gateway Wallet),
+  never one a merchant chose.
+- **The Gateway deposit is the hard spending cap**, and a refused or expired
+  quote charges nothing.
+
+## Beyond this skill
+
+The other wrappers in this repo run vetted `selat-skills` recipes via the
+`selat` CLI and a Circle Agent Wallet — use those when the user isn't on a
+MetaMask Agent Wallet. Vetted recipes themselves are portable: this skill can
+run them too (see the routing table above).
+
+Docs: https://github.com/SELAT-AI/selat-skills
