@@ -1,7 +1,7 @@
 ---
 name: financial-intel
-description: "Multi-signal financial intelligence on a crypto asset, token, or equity ticker — fuses live spot price, token market data, macro/equities context, on-chain smart-money positioning, fundamentals and funding history, and current market news into one brief with citations. Use when asked \"give me a full read on ETH\", \"what's the market intel on <token>\", \"smart-money + fundamentals brief for <coin>\", \"macro + equities + crypto snapshot on <ticker>\", or \"is <asset> a buy right now\". Read-only, and paid per call in USDC from the user's own self-custody Circle Agent Wallet across three settlement rails — no API keys, no signups. Dry-run first to see live prices."
-version: 1.0.0
+description: "Multi-signal financial intelligence on a crypto asset, token, or equity ticker — fuses live spot price, token market data, macro/equities context, on-chain smart-money positioning, and current market news into one brief with citations. Use when asked \"give me a full read on ETH\", \"what's the market intel on <token>\", \"smart-money brief for <coin>\", \"macro + equities + crypto snapshot on <ticker>\", or \"what's the current read on <asset>\". Read-only, and paid per call in USDC from the user's own self-custody Circle Agent Wallet across two settlement rails — no API keys, no signups. Dry-run first to see live prices."
+version: 1.1.0
 metadata:
   openclaw:
     emoji: "📊"
@@ -24,18 +24,17 @@ metadata:
 # financial-intel
 
 A cross-source financial read on a single asset, keylessly and pay-per-run. This
-skill gathers paid signal from six providers — spot price, token market data,
-macro/equities, on-chain smart-money positioning, fundamentals and funding, and
-market news — and hands you (the agent) the raw results to fuse into one brief:
-what the asset costs, how its market is behaving, the macro backdrop, where
-labeled smart money sits, the funding picture, and the news that confirms or
-contradicts it.
+skill gathers paid signal from five providers — spot price, token market data,
+macro/equities, on-chain smart-money positioning, and market news — and hands you
+(the agent) the raw results to fuse into one brief: what the asset costs, how its
+market is behaving, the macro backdrop, where labeled smart money sits, and the
+news that confirms or contradicts it.
 
 It wraps a **SELAT skill**: a declarative, vetted recipe of paid API calls (no
-API keys, no signups) settled in USDC. Signal spans **three settlement modes** —
-a Circle Gateway-batched nanopayment, MPP on Tempo, and x402 on Base — which the
-`selat` CLI auto-detects per step. Read-only: it never trades, posts, or mutates
-anything, and it is **not** financial advice.
+API keys, no signups) settled in USDC. Signal spans **two settlement modes** — a
+Circle Gateway-batched nanopayment and MPP on Tempo — which the `selat` CLI
+auto-detects per step. Read-only: it never trades, posts, or mutates anything,
+and it is **not** financial advice.
 
 ## Cost — read this first
 
@@ -79,9 +78,10 @@ which defaults to the path above. The `SELAT_ROUTER_URL` prefix is only needed
 before `selat init` has written config.)
 
 This prints each step's real quoted price from the live 402 challenges, plus
-which rail settles it. **Show the user these prices and get their OK before
-wallet setup.** If they don't want to proceed, stop here — nothing has been spent
-or created.
+which rail settles it. Note that `verify` is probe-only — it confirms each step is
+payable, not that the provider returns usable data. **Show the user these prices
+and get their OK before wallet setup.** If they don't want to proceed, stop here —
+nothing has been spent or created.
 
 ## Step 2 — wallet setup (only after the user opts in)
 
@@ -117,13 +117,12 @@ selat skill run financial-intel \
 
 **Set the params together so the steps describe one asset** — a run with
 `--symbol ETH` but a default equity ticker and a mismatched news query produces
-six answers about five different things. Each step returns raw JSON; your job is
+five answers about four different things. Each step returns raw JSON; your job is
 to distill it into a short brief in plain language — price and market snapshot,
-macro backdrop, smart-money posture, fundamentals and funding, and the news that
-supports or cuts against the read — with the dollar cost the CLI reported and a
-clearly hedged conclusion. Keep endpoint URLs and raw JSON out of what you relay.
-If a step returns nothing usable, say so and reason from the steps that did
-return.
+macro backdrop, smart-money posture, and the news that supports or cuts against
+the read — with the dollar cost the CLI reported and a clearly hedged conclusion.
+Keep endpoint URLs and raw JSON out of what you relay. If a step returns nothing
+usable, say so and reason from the steps that did return.
 
 ## Why this is safe to install
 

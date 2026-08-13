@@ -16,13 +16,14 @@ executable code and no endpoint URLs** — installing one only ever writes text.
 
 | Skill | Intent |
 |---|---|
+| [`financial-intel`](skills/financial-intel/SKILL.md) | Multi-signal financial brief on a crypto asset, token, or equity ticker — spot price, token market data, macro/equities, on-chain smart-money, and market news fused into one read with citations. Two settlement rails (Circle Gateway nanopayment, MPP on Tempo). Research only, never orders or advice |
 | [`vc-ai-infra-scout`](skills/vc-ai-infra-scout/SKILL.md) | VC deal sourcing across an AI-infra / crypto-AI / robotics / agentic-payments thesis — discover founders, read raise chatter, distill lead-fund theses, enrich the top lead |
 | [`twitter-research`](skills/twitter-research/SKILL.md) | Read-only Twitter/X research — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Curated 9-read menu; the agent runs only what's needed |
 | [`perplexity-search`](skills/perplexity-search/SKILL.md) | Grounded web search & research via Perplexity — cheap web search plus agent-answer & async deep-research escalations, keyless & cited. Shown prices include SELAT's ~5% routing markup |
 | [`selat-capabilities-for-metamask`](skills/selat-capabilities-for-metamask/SKILL.md) | SELAT's **capability layer** for agents on a **MetaMask Agent Wallet** — tool use beyond the agent's native abilities, strongest as **decision support for trading** (perp funding rates, prediction-market candles, tokenized-stock quotes/technicals, news & social sentiment, macro regime — research data only, never order execution): discover paid APIs by intent, buy on rails the native x402 payer can't sign, fund a Gateway budget gaslessly, report spend. Unlike the wrappers above it needs **no `selat` CLI or SELAT plugin**: it runs on the `mm` CLI + [selat-metamask-skills](https://github.com/SELAT-AI/selat-metamask-skills) |
 | [`stock-direction-signals`](skills/stock-direction-signals/SKILL.md) | Directional research brief on a US stock for agents on a **MetaMask Agent Wallet** — nine paid reads (quote, chart, RSI/MACD, news, earnings, Twitter/X, Reddit, macro) fused into a bullish/bearish/mixed brief. Research only, never orders or advice. Same `mm`-CLI engine — **no `selat` CLI or SELAT plugin** |
-| [`financial-intel`](skills/financial-intel/SKILL.md) | Multi-signal financial brief on a crypto asset, token, or equity ticker — spot price, token market data, macro/equities, on-chain smart-money, fundamentals/funding, and market news fused into one read with citations. Three settlement rails (Circle Gateway nanopayment, MPP on Tempo, x402 on Base). Research only, never orders or advice |
-More coming: lead enrichment, influencer discovery, social intelligence.
+
+- More coming: lead enrichment, influencer discovery, social intelligence.
 
 ## How every skill works — dry run before wallets
 
