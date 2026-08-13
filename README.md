@@ -16,6 +16,7 @@ executable code and no endpoint URLs** — installing one only ever writes text.
 
 | Skill | Intent |
 |---|---|
+| [`financial-intel`](skills/financial-intel/SKILL.md) | Multi-signal financial brief on a crypto asset, token, or equity ticker — spot price, token market data, macro/equities, on-chain smart-money, and market news fused into one read with citations. Two settlement rails (Circle Gateway nanopayment, MPP on Tempo). Research only, never orders or advice |
 | [`vc-ai-infra-scout`](skills/vc-ai-infra-scout/SKILL.md) | VC deal sourcing across an AI-infra / crypto-AI / robotics / agentic-payments thesis — discover founders, read raise chatter, distill lead-fund theses, enrich the top lead |
 | [`twitter-research`](skills/twitter-research/SKILL.md) | Read-only Twitter/X research — profiles, recent tweets, mentions, followers, tweet details/replies/retweeters, topic search, and trends. Curated 9-read menu; the agent runs only what's needed |
 | [`perplexity-search`](skills/perplexity-search/SKILL.md) | Grounded web search & research via Perplexity — cheap web search plus agent-answer & async deep-research escalations, keyless & cited. Shown prices include SELAT's ~5% routing markup |
