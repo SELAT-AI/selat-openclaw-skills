@@ -23,7 +23,7 @@ executable code and no endpoint URLs** — installing one only ever writes text.
 | [`selat-capabilities-for-metamask`](skills/selat-capabilities-for-metamask/SKILL.md) | SELAT's **capability layer** for agents on a **MetaMask Agent Wallet** — tool use beyond the agent's native abilities, strongest as **decision support for trading** (perp funding rates, prediction-market candles, tokenized-stock quotes/technicals, news & social sentiment, macro regime — research data only, never order execution): discover paid APIs by intent, buy on rails the native x402 payer can't sign, fund a Gateway budget gaslessly, report spend. Unlike the wrappers above it needs **no `selat` CLI or SELAT plugin**: it runs on the `mm` CLI + [selat-metamask-skills](https://github.com/SELAT-AI/selat-metamask-skills) |
 | [`stock-direction-signals`](skills/stock-direction-signals/SKILL.md) | Directional research brief on a US stock for agents on a **MetaMask Agent Wallet** — nine paid reads (quote, chart, RSI/MACD, news, earnings, Twitter/X, Reddit, macro) fused into a bullish/bearish/mixed brief. Research only, never orders or advice. Same `mm`-CLI engine — **no `selat` CLI or SELAT plugin** |
 
-- More coming: lead enrichment, influencer discovery, social intelligence.
+More coming: lead enrichment, influencer discovery, social intelligence.
 
 ## How every skill works — dry run before wallets
 
